@@ -115,12 +115,15 @@
             halign: 'center',
             formatter:function(value,row,index) {
                 if (value.length>1) {
+                    /*
                     var valuesplit = value.split(".");
                     var address = '../static/download/' + valuesplit[0] + '/' + value;
                     var returnhtml = "<a href=\"" + address + "\">download</a>"
                     return [
                         returnhtml
                     ].join("")
+                    */
+                    return '<a href="/download_file/?file='+value+'">download</a>'
                 }
                 else {
                     return [

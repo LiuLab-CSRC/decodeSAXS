@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^tutorial/', reconViews.totorial),
     url(r'^check/',reconViews.check),
     url(r'^history/',reconViews.history),
+    url(r'^download_file/',reconViews.download_file),
     url(r'^checkhistory/',reconViews.checkhistory),
     url(r'^getform/',reconViews.getform),
     url(r'^checkresult/',reconViews.checkresult),

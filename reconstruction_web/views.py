@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import StreamingHttpResponse
 import os
 import thread
 import time
@@ -47,7 +48,23 @@ def checkhistory(request):
                 })
     return HttpResponse(json.dumps(returnData))
 
+def readFile(filename, chunk_size=512):
+    with open(filename, 'rb') as f:
+        while True:
+            c = f.read(chunk_size)
+            if c:
+                yield c
+            else:
+                break
 
+def download_file(request):
+    download_name = request.GET["file"]
+    the_file_name = str(download_name).split(".")
+    filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/download/'+the_file_name[0]+'/'+str(download_name))
+    response = StreamingHttpResponse(readFile(filename))
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="{0}"'.format(str(download_name))
+    return response
 
 def submit(request):
     pass
@@ -137,7 +154,7 @@ def checkresult(request):
         except:status = 'wrong_jobid'
         context = {}
         context["status"] = status
-        context["downloadlink"] = './download/'+check_id+'/'+downloadlink
+        context["downloadlink"] = downloadlink
 
         #print context["downloadlink"]
         return render(request, "getresult.html", context)
