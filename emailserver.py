@@ -14,7 +14,7 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import parseaddr, formataddr
 import smtplib 
 
-web_outpath='/Users/haohe/software/Django/Project/SAXS/reconstruction_web/static/download'
+web_outpath=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reconstruction_web/static/download')
 
 def _format_addr(s):
     name, addr = parseaddr(s)
@@ -86,7 +86,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
 if __name__ == "__main__":
     # Port 0 means to select an arbitrary unused port
-    HOST, PORT = "0.0.0.0", 50002
+    HOST, PORT = "0.0.0.0", 10006 
     
     SocketServer.TCPServer.allow_reuse_address = True
     server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
