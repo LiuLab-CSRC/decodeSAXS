@@ -23,7 +23,6 @@ def history(request):
     return render(request, "history.html")
 
 def checkhistory(request):
-    print 'aaaaa'
     if request.method == "GET":
         check_path = "./reconstruction_web/static/download/"
         returnData = {"rows": []}
@@ -65,7 +64,7 @@ def client(ip, port, message):
     sock.connect((ip, port))
 
     try:
-        print "Send: {}".format(message)
+        #print "Send: {}".format(message)
         sock.sendall(message)
 
         #response = sock.recv(1024)
@@ -140,6 +139,6 @@ def checkresult(request):
         context["status"] = status
         context["downloadlink"] = './download/'+check_id+'/'+downloadlink
 
-        print context["downloadlink"]
+        #print context["downloadlink"]
         return render(request, "getresult.html", context)
 
