@@ -168,7 +168,7 @@
                 formatter:function(value,row,index) {
                     if(index==0){
                         var loadscript = 'load "../media/samples_withrmax/XXXX/XXXX_fit1_model1_za.pdb"; cartoon only; color yellowtint; isosurface cutoff 0.15 "../media/samples_withrmax/XXXX/out.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
-                        loadscript=loadscript.replace(/XXXX/g, value)
+                        loadscript=loadscript.replace(/XXXX/g, value);
                         Jmol.script(jmolApplet0,loadscript);
                     }
 
