@@ -14,7 +14,7 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import parseaddr, formataddr
 import smtplib 
 
-web_outpath=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reconstruction_web/static/download')
+web_outpath=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reconstruction_web/media/result')
 
 def _format_addr(s):
     name, addr = parseaddr(s)
@@ -34,12 +34,12 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         to_addr = send_email
         smtp_server = 'smtp.163.com'
         msg = MIMEMultipart()
-        msg['From'] = _format_addr(u'SaxsRe <%s>' % from_addr)
+        msg['From'] = _format_addr(u'decodeSAXS <%s>' % from_addr)
         msg['To'] = _format_addr(u'Users <%s>' % to_addr)
-        msg['Subject'] = Header(u'the results of SaxsRe', 'utf-8').encode()
+        msg['Subject'] = Header(u'the results of decodeSAXS', 'utf-8').encode()
 
         # add MIMEText:
-        msg.attach(MIMEText('Thanks for using SaxsRe, hope it useful for you, any suggestions you can contact with us.', 'plain', 'utf-8'))
+        msg.attach(MIMEText('Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.', 'plain', 'utf-8'))
 
         # add file:
         with open('%s/%s/%s.tar.gz'%(web_outpath,job_file,job_file), 'rb') as f:

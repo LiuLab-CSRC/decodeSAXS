@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>decodeSAXS-submit</title>
+    {% load staticfiles %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{% static "./4/flatly/bootstrap.css" %}" media="screen">
+    <link rel="stylesheet" href="{% static "./_assets/css/custom.min.css" %}">
+    <script src="{% static 'jsmol/JSmol.min.js' %}"></script>
+    <script type="text/javascript">
+      var jmolApplet0; // set up in HTML table, below
+
+      var Info = {
+        width: 300,
+        height: 300,
+        debug: false,
+        color: "white",
+        addSelectionOptions: false,
+        //serverURL: "{% static 'js/jsmol/php/jsmol.php' %}",
+        use: "HTML5",
+        j2sPath: "{% static 'j2s' %}",
+        //readyFunction: jmol_isReady,
+        //script: script,
+        //jarPath: "java",
+        //jarFile: (useSignedApplet ? "JmolAppletSigned.jar" : "JmolApplet.jar"),
+        //isSigned: useSignedApplet,
+        //disableJ2SLoadMonitor: true,
+        disableInitialConsole: true,
+        //defaultModel: "$dopamine",
+      };
+
+
+      // these are conveniences that mimic behavior of Jmol.js
+
+      function jmolCheckbox(script1, script0,text,ischecked) {Jmol.jmolCheckbox(jmolApplet0,script1, script0, text, ischecked)}
+      function jmolButton(script, text) {Jmol.jmolButton(jmolApplet0, script,text)}
+      // function jmolScript(script) {Jmol.jmolScript(jmolApplet0, script)}
+      function jmolHtml(s) { document.write(s) }
+      function jmolBr() { jmolHtml("<br>") }
+      function jmolMenu(a) {Jmol.jmolMenu(jmolApplet0, a)}
+    </script>
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+      <div class="container">
+        <a style="font-size: x-large" href="/index/" class="navbar-brand">decodeSAXS</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a style="font-size: large" class="nav-link" href="/index/">Home</a>
+            </li>
+            <li class="nav-item">
+            <a style="font-size: large" class="nav-link" href="/submit/">Submit</a>
+            </li>
+            <li class="nav-item">
+              <a style="font-size: large" class="nav-link" href="/check/">Check</a>
+            </li>
+            <li class="nav-item">
+              <a style="font-size: large" class="nav-link" href="/history/">History</a>
+            </li>
+            <li class="nav-item">
+              <a style="font-size: large" class="nav-link" href="/tutorial/">Tutorial</a>
+            </li>
+            <li class="nav-item">
+              <a style="font-size: large" class="nav-link" href="/showresult/">Showresult</a>
+            </li>
+            <li><a style="font-size: large" class="nav-link" href="https://github.com/DreAymi/SAXS_reconstruction"><i aria-hidden="true"></i> GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div align='center' >
+        {% if status == 'no' %}
+            <h3 class="display-3">It's still running.</h3>
+        {% elif status == 'yes' %}
+            <h4 class="display-4">You can download results here!</h4>
+            <a  style="font-size: xx-large" class="btn btn-link" href="/download_file/?file={{ downloadlink }}">download</a>
+        {% else %}
+            <table align='center'>
+                <tr>
+                    <script type="text/javascript">
+                        Jmol.getApplet("jmolApplet0", Info)
+
+                        var loadscript = 'load "../media/result/1556248482/out_za.pdb"; spacefill 1.5; color yellowtint; isosurface cutoff 0.15 "../media/result/1556248482/out1.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
+                        Jmol.script(jmolApplet0,loadscript);
+                        //var loadscript = 'load "../media/result/1556248482/out_za.pdb"; spacefill 1.5; color yellowtint; isosurface cutoff 0.098660 "../media/result/1556248482/out1.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
+                        //Jmol.script(jmolApplet0,loadscript);
+
+                        jmolButton("cartoon only; color structure;", "cartoon");
+                        jmolButton("spacefill 1.5; color yellowtint;", "spacefill")
+                    </script>
+                </tr>
+            </table>
+            <h3 class="display-3">You input wrong Job ID.</h3>
+        {% endif %}
+        <hr class="my-4">
+
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="/check/" role="button">Back</a>
+        </p>
+    </div>
+
+
+<script src="{% static "./_vendor/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "./_vendor/popper.js/dist/umd/popper.min.js" %}"></script>
+<script src="{% static "./_vendor/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+<script src="{% static "./_assets/js/custom.js" %}"></script>
+
+
+<div class="text" style=" text-align:center;">Building 9, East Zone, ZPark II, No.10 East Xibeiwang Road, Haidian District, Beijing 100193, China</div>
+<div class="text" style=" text-align:center;">Department of Complex System</div>
+
+</body>
+
+</html>
+

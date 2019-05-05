@@ -120,4 +120,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_ROOT=os.path.join(BASE_DIR,"reconstruction_web","media")
+MEDIA_URL = '/media/'
+
 FILE_UPLOAD_MAX_MEMORY_SIZE = 209715200

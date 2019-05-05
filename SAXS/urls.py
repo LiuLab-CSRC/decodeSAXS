@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from reconstruction_web import views as reconViews
-
+from django.views.static import serve
+import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^index/', reconViews.index),
@@ -26,6 +27,10 @@ urlpatterns = [
     url(r'^history/',reconViews.history),
     url(r'^download_file/',reconViews.download_file),
     url(r'^checkhistory/',reconViews.checkhistory),
+    url(r'^samples_withRmax/',reconViews.samples_withRmax),
+    url(r'^samples_withoutRmax/',reconViews.samples_withoutRmax),
     url(r'^getform/',reconViews.getform),
     url(r'^checkresult/',reconViews.checkresult),
+    url(r'^showsamples/',reconViews.showsamples),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 ]

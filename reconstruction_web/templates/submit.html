@@ -8,21 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="{% static "./4/flatly/bootstrap.css" %}" media="screen">
     <link rel="stylesheet" href="{% static "./_assets/css/custom.min.css" %}">
-    <script>
 
-     var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-23019901-1']);
-      _gaq.push(['_setDomainName', "bootswatch.com"]);
-        _gaq.push(['_setAllowLinker', true]);
-      _gaq.push(['_trackPageview']);
-
-     (function() {
-       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-     })();
-
-    </script>
   </head>
   <style type="text/css">
        label {
@@ -59,6 +45,17 @@
               <a style="font-size: large" class="nav-link" href="/history/">History</a>
             </li>
             <li class="nav-item">
+                <div class="btn-group">
+                    <button type="button" style="font-size: large;margin-top: 1px" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Samples
+                        <span class="caret"></span>
+                    </button>
+                    <ul width='10px' class="dropdown-menu" role="menu">
+                        <li><a style="font-size: large;background-color: #476478" class="nav-link" href="/samples_withRmax/">withRmax</a></li>
+                        <li><a style="font-size: large;background-color: #476478" class="nav-link" href="/samples_withoutRmax/">withoutRmax</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
               <a style="font-size: large" class="nav-link" href="/tutorial/">Tutorial</a>
             </li>
             <li><a style="font-size: large" class="nav-link" href="https://github.com/DreAymi/SAXS_reconstruction"><i aria-hidden="true"></i> GitHub</a></li>
@@ -67,7 +64,7 @@
       </div>
     </div>
 
-    <div class="page-header" id="banner" style = "margin-left: 280px">
+    <div class="page-header" id="banner" style = "margin-left: 16%">
         <div class="row">
           <div class="col-lg-8 col-md-7 col-sm-6">
             <h1 style="font-size: 40px">Submit DecodeSAXS Job</h1>
@@ -77,12 +74,12 @@
       </div>
 
 
-    <div style = "margin-left:450px;margin-right:470px">
+    <div style = "margin-left:26%;margin-right:27%">
       <h5 style = "float: left;color:cornflowerblue">Note:</h5>
       <h5 style="color:cornflowerblack">&nbsp You need to upload your SAXS data.</h5>
       <hr></hr>
    </div>
-   <div style = "margin-left: 450px;margin-right:470px">
+   <div style = "margin-left: 26%;margin-right:27%">
       <form action="/getform/" method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <fieldset>
@@ -91,16 +88,16 @@
               <input type="file" required id="exampleInputFile" aria-describedby="fileHelp" name = "up_file">
                 <small id="fileHelp" class="form-text text-muted">You need to upload SAXS data, it must be ascii text file<a href="https://github.com/DreAymi/SAXS_reconstruction/blob/master/SASDA25.dat">(DAT*)</a>,two or three columns. or GNOM<a href="https://github.com/DreAymi/SAXS_reconstruction/blob/master/SASDA25.out">(.out)</a> file.</small>
             </div>
+            <div class="form-group">
+              <label for="jobname">Job Name:</label>
+              <input type="text"  minlength="4" size=50 required id="jobname" aria-describedby="jobHelp" name = "job_name">
+              <small id="jobHelp" class="form-text text-muted">A job name must be given, more than 6 characters. You need to remember this name to check the history.</small>
+            </div>
             <h5 style = "float: left;color:cornflowerblue">Note:</h5>
             <h5>&nbsp the following parts are optional.</h5>
             <hr></hr>
-            <!--
-            <div class="form-group">
-              <label for="jobname">Job Name:</label>
-              <input type="text"  size=50 id="jobname" aria-describedby="jobHelp" name = "job_name">
-              <small id="jobHelp" class="form-text text-muted">A job name must be given, more than 6 characters. You need to remember this name to check the result.</small>
-            </div>
-            -->
+
+
             <div class="form-group">
               <label for="estimatermax">Estimate Maximum Radius:</label>
               <input type="text" placeholder="(Å)" size=50 id="estimatermax" aria-describedby="rmaxHelp" name = "estimate_rmax">

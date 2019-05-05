@@ -8,21 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="{% static "./4/flatly/bootstrap.css" %}" media="screen">
     <link rel="stylesheet" href="{% static "./_assets/css/custom.min.css" %}">
-    <script>
 
-     var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-23019901-1']);
-      _gaq.push(['_setDomainName', "bootswatch.com"]);
-        _gaq.push(['_setAllowLinker', true]);
-      _gaq.push(['_trackPageview']);
-
-     (function() {
-       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-     })();
-
-    </script>
   </head>
   <body>
     <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
@@ -46,6 +32,17 @@
               <a style="font-size: large" class="nav-link" href="/history/">History</a>
             </li>
             <li class="nav-item">
+                <div class="btn-group">
+                    <button type="button" style="font-size: large;margin-top: 1px" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Samples
+                        <span class="caret"></span>
+                    </button>
+                    <ul width='10px' class="dropdown-menu" role="menu">
+                        <li><a style="font-size: large;background-color: #476478" class="nav-link" href="/samples_withRmax/">withRmax</a></li>
+                        <li><a style="font-size: large;background-color: #476478" class="nav-link" href="/samples_withoutRmax/">withoutRmax</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
               <a style="font-size: large" class="nav-link" href="/tutorial/">Tutorial</a>
             </li>
             <li><a style="font-size: large" class="nav-link" href="https://github.com/DreAymi/SAXS_reconstruction"><i aria-hidden="true"></i> GitHub</a></li>
@@ -56,7 +53,7 @@
 
 
 
-    <div class="page-header" id="banner" style = "margin-left: 280px">
+    <div class="page-header" id="banner" style = "margin-left: 16%;margin-right: 16%">
         <div class="row">
           <div class="col-lg-8 col-md-7 col-sm-6">
             <h1>Checking Results</h1>
@@ -66,7 +63,7 @@
     </div>
 
 
-    <div style = "margin-left:280px; margin-top:40px; margin-right:280px">
+    <div style = "margin-left:16%; margin-top:2.5%; margin-right:16%">
       <h4 style = "color:cornflowerblue">Process Information</h4>
       <hr></hr>
       <p>Each job has an own ID, you can input your Job ID to check the results</p>
@@ -76,11 +73,11 @@
     <form action="/checkresult/" method="post">
       {% csrf_token %}
         <fieldset>
-            <div class="form-group" style = "margin-left:280px; margin-top:20px; margin-right:280px">
+            <div class="form-group" style = "margin-left:16%; margin-top:1%; margin-right:16%">
                 <label class="col-form-label" for="inputDefault">Job ID</label>
                 <input type="text" class="form-control" placeholder="Please input your Job ID" id="check_id" name = "check_id">
             </div>
-            <div align="center" style = "margin-left:280px; margin-top:10px; margin-right:280px">
+            <div align="center" style = "margin-left:16%; margin-top:1%; margin-right:16%">
                 <button type="submit" class="btn btn-primary" id="checkresult">check</button>
             </div>
        </fieldset>
