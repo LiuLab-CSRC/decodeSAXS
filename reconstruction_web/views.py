@@ -74,6 +74,9 @@ def showsamples(request):
             returnData = {"rows": []}
             samplenames = os.listdir(checkpath)
             samplenames.sort()
+            temp=samplenames[3]
+            samplenames[3]=samplenames[0]
+            samplenames[0]=temp
             ccfile = open('./reconstruction_web/media/samples_withrmax/CC.txt','r')
             ccdata = ccfile.readlines()
             ccdict = {}
@@ -91,6 +94,9 @@ def showsamples(request):
             returnData = {"rows": []}
             samplenames = os.listdir(checkpath)
             samplenames.sort()
+            temp=samplenames[3]
+            samplenames[3]=samplenames[0]
+            samplenames[0]=temp
             ccfile = open('./reconstruction_web/media/samples_withoutrmax/CC.txt','r')
             ccdata = ccfile.readlines()
             ccdict = {}

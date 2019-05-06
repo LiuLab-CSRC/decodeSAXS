@@ -88,16 +88,8 @@
                     <div align="center">
                         <script type="text/javascript">
                             jmolApplet0=Jmol.getApplet("jmolApplet0", Info);
-                            /*
-                            function loadjmol(sampleid){
-                                var loadscript = 'load "../media/samples_withrmax/XXXX/XXXX_fit1_model1_za.pdb"; cartoon only; color yellowtint; isosurface cutoff 0.15 "../media/samples_withrmax/XXXX/out.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
-                                loadscript=loadscript.replace(/XXXX/g, sampleid)
-                                Jmol.script(jmolApplet0,loadscript);
-                            }
-                            loadjmol('SASDA25');
-                            //var loadscript = 'load "../media/result/1556248482/out_za.pdb"; spacefill 1.5; color yellowtint; isosurface cutoff 0.15 "../media/result/1556248482/out1.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
-                            //Jmol.script(jmolApplet0,loadscript);
-                            */
+                            var loadscript = 'load "../media/1crn.pdb"; spacefill 1.5; color yellowtint;';
+                            Jmol.script(jmolApplet0,loadscript);
                             jmolButton("cartoon only; color structure;", "cartoon");
                             jmolButton("spacefill 1.5; color yellowtint;", "spacefill");
                         </script>
