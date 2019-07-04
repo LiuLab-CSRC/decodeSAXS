@@ -11,7 +11,8 @@ import socket
 import json
 import numpy as np
 import processSaxs as ps
-
+#from sastbx.zernike_model import model_interface
+#import zalign
 
 
 # Create your views here.
@@ -157,20 +158,20 @@ def client(ip, port, message):
     finally:
         sock.close()
 
+
 def generatedata(request,cur_time):
     if request.method == "POST":
         cur_time = str(cur_time)
-        file_obj = request.FILES.get("up_file")
+        file_obj = request.FILES["up_file"]
         job_name = request.POST.get('job_name')
         estimate_rmax=request.POST.get('estimate_rmax')
-        decode_threshold=request.POST.get('decode_threshold')
         send_email=request.POST.get('send_email')
         job_log=open('joblog.txt','a')
         print >> job_log, cur_time+','+job_name
         job_log.close()
         os.mkdir("./reconstruction_web/media/result/" + cur_time)
-        file_path = "./reconstruction_web/media/result/" + cur_time + '/' + file_obj.name
-        with open("./reconstruction_web/media/result/" + cur_time + '/' + file_obj.name, "wb") as f1:
+        file_path = "./reconstruction_web/media/result/" + cur_time + '/' + 'upload_saxs.'+file_obj.name.split('.')[-1]
+        with open(file_path, "wb") as f1:
             for i in file_obj.chunks():
                 f1.write(i)
         f1.close()
@@ -181,14 +182,13 @@ def generatedata(request,cur_time):
         #saxs_data = np.loadtxt(file_path)
         saxs_data = list(saxs_data.astype(float).reshape(-1))
         saxs_data = str(saxs_data)
-        sendmessage = [{'saxs_data': saxs_data, 'job_file': cur_time, 'estimate_rmax': estimate_rmax, 'decode_threshold': decode_threshold, 'send_email': send_email}]
+        sendmessage = [{'saxs_data': saxs_data, 'job_file': cur_time, 'estimate_rmax': estimate_rmax, 'send_email': send_email}]
         jsendmessage = json.dumps(sendmessage)
 
 
-        HOST, PORT = "10.0.0.20", 50001
+        HOST, PORT = "10.0.1.249", 50001
         #print "Send: {}".format(jsendmessage)
         client(HOST, PORT, jsendmessage)
-
 
 
 def getform(request):
@@ -211,6 +211,7 @@ def checkresult(request):
             total_num = len(check_files)
             check_num = 0
             status = 'no'
+            havepdb = 'no'
             for dir in check_files:
                 if '.tar.gz' in dir:
                     status = 'yes'
@@ -218,14 +219,54 @@ def checkresult(request):
                     break
                 else:
                     check_num += 1
+            for dir in check_files:
+                if 'upload_saxs' in dir:
+                    upload_saxs_path=check_path+'/'+ dir
+                    break
             if check_num == total_num:
                 print 'not found or still process'
         except:status = 'wrong_jobid'
         context = {}
         context["status"] = status
+        context["havepdb"] = havepdb
+        context["downloadlink"] = downloadlink
+        context["filepath"] = downloadlink.split('.')[0]
+        sourcesaxsdata = ps.generatesaxsstr(upload_saxs_path)
+        fit_saxs_path = check_path+'/finalfit.txt'
+        fitsaxsdata = ps.generatesaxsstr(fit_saxs_path)
+        context["sourcesaxsdata"] = sourcesaxsdata
+        context["fitsaxsdata"] =fitsaxsdata
+        #print context["sourcesaxsdata"]
+        return render(request, "getresult.html", context)
+
+
+
+def alignwithresult(request):
+    if request.method == "POST":
+        check_id = request.POST.get("job_number")
+        downloadlink = ''
+        pdbpath="./reconstruction_web/media/result/" + check_id
+        pdb_obj = request.FILES['up_pdb']
+        if '.pdb' in pdb_obj.name:
+            with open("./reconstruction_web/media/result/" + check_id + '/' + 'upload_pdb.pdb', "wb") as f2:
+                # f2.seek(0, 0)
+                for j in pdb_obj.chunks():
+                    f2.write(j)
+        #pdbfile = '%s/out.ccp4'%pdbpath
+        #cavitymodel = model_interface.build_model(pdbfile, 'pdb', 20, None)
+        #shiftrmax=cavitymodel.rmax*0.9
+        #args = ['fix=%s/out.ccp4'%pdbpath, 'typef=ccp4', 'mov=%s/upload_pdb.pdb'%pdbpath, 'rmax=%f'%shiftrmax]
+        #zalign.run(args, pdbpath)
+        #os.system("sastbx.python %s"%args)
+        status = 'yes'
+        havepdb = 'yes'
+        downloadlink = check_id+'.tar.gz'
+
+        context = {}
+        context["status"] = status
+        context["havepdb"] = havepdb
         context["downloadlink"] = downloadlink
         context["filepath"] = downloadlink.split('.')[0]
 
-        #print context["downloadlink"]
         return render(request, "getresult.html", context)
 

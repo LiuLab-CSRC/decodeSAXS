@@ -198,3 +198,18 @@ def process(file_path):
 	if file_path.split('.')[-1]=='out':
 		result.append(Rmax)
 	return result
+
+def generatesaxsstr(file_path):
+	if file_path.split('.')[-1]=='out':
+		stat,iq_curve,Rmax=read_standardiq_out(file_path)
+		if stat!=0:
+			return False
+	else:
+		stat,iq_curve = read_standardiq_dat(file_path)
+		if stat!=0:
+			return False
+	saxsstr=''
+	for ii in range(len(iq_curve)):
+		saxsstr=saxsstr+'{x: %f, y: %f},'%(iq_curve[ii,0],iq_curve[ii,1])
+	print saxsstr[-70:]
+	return saxsstr

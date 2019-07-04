@@ -9,12 +9,14 @@
     <link rel="stylesheet" href="{% static "./4/flatly/bootstrap.css" %}" media="screen">
     <link rel="stylesheet" href="{% static "./_assets/css/custom.min.css" %}">
     <script src="{% static 'jsmol/JSmol.min.js' %}"></script>
+    <script src="{% static 'chart/Chart.bundle.js' %}"></script>
+    <script src="{% static 'chart/utils.js' %}"></script>
     <script type="text/javascript">
 
       var Info = {
 
-        width: 350,
-        height: 350,
+        width: 450,
+        height: 450,
         debug: false,
         color: "white",
         addSelectionOptions: false,
@@ -80,22 +82,98 @@
         </div>
       </div>
     </div>
-    <div align='center' style="margin-top: 30px">
+    <div align='center' style="margin-top: 10px">
         {% if status == 'no' %}
             <h3 class="display-3">It's still running.</h3>
         {% elif status == 'yes' %}
-            <table align='center'>
+            <table border="1" cellspacing="0" cellpadding="1" width='90%' align='center' style="margin-left: 5%;margin-right: 5%">
+                <tr align="center">
+                    <th>Reconstruction result</th>
+                    <th>SAXS profile fitting</th>
+                    <th>Upload pdb structure</th>
+                </tr>
                 <tr>
-                    <script type="text/javascript">
-                        jmolApplet0=Jmol.getApplet("jmolApplet0", Info)
-                        var loadscript = 'load "../media/result/XXXX/out_za.pdb"; spacefill 1.5; color yellowtint; isosurface cutoff 0.15 "../media/result/XXXX/out.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
-                        var filepath={{ filepath }};
-                        loadscript=loadscript.replace(/XXXX/g, filepath)
-                        Jmol.script(jmolApplet0,loadscript);
+                    <td width="40%" align="center">
+                        {% if havepdb == 'yes' %}
+                            <script type="text/javascript">
+                                jmolApplet0=Jmol.getApplet("jmolApplet0", Info)
+                                var loadscript = 'load "../media/result/XXXX/upload_pdb.pdb"; spacefill 1.5; color yellowtint; isosurface cutoff 0.15 "../media/result/XXXX/out.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 100; set spiny 10;set spinfps 15;spin off;';
+                                var filepath={{ filepath }};
+                                loadscript=loadscript.replace(/XXXX/g, filepath)
+                                Jmol.script(jmolApplet0,loadscript);
 
-                        jmolButton("cartoon only; color structure;", "cartoon");
-                        jmolButton("spacefill 1.5; color yellowtint;", "spacefill")
-                    </script>
+                                jmolButton("cartoon only; color structure;", "cartoon");
+                                jmolButton("spacefill 1.5; color yellowtint;", "spacefill")
+                            </script>
+                        {% else %}
+                            <script type="text/javascript">
+                                jmolApplet0=Jmol.getApplet("jmolApplet0", Info)
+                                var loadscript = 'isosurface cutoff 0.15 "../media/result/XXXX/out.ccp4";background white;color isosurface translucent; center $isosurface1;zoom 15; set spiny 10;set spinfps 15;spin off;';
+                                var filepath={{ filepath }};
+                                loadscript=loadscript.replace(/XXXX/g, filepath)
+                                Jmol.script(jmolApplet0,loadscript);
+
+                                jmolButton("cartoon only; color structure;", "cartoon");
+                                jmolButton("spacefill 1.5; color yellowtint;", "spacefill")
+                            </script>
+                        {% endif %}
+                    </td>
+                    <td width="40%" align="center" style="margin-left: 5%;margin-right: 5%">
+                        <canvas id="iq_chart"></canvas>
+                        <script>
+                        var ctx = document.getElementById("iq_chart");
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                datasets: [
+                                 {  fill: false,
+                                    borderColor: window.chartColors.red,
+                                    label: 'Theoretical I(q)',
+                                    data: [
+                                        {{ sourcesaxsdata }}
+                                         ],
+                                },
+                                 {  fill: false,
+                                    borderColor: window.chartColors.blue,
+                                    label: 'Experimental I(q)',
+                                    data: [
+                                        {{ fitsaxsdata }}
+                                        ],
+                                }],
+                            },
+                            options: {
+                                showLines: true,
+                                scales: {
+                                    yAxes: [{
+                                        type: 'logarithmic',
+                                        scaleLabel: {labelString: 'log I(q)', display: true}
+                                    }],
+                                    xAxes: [{
+                                        type: 'linear',
+                                        scaleLabel: {labelString: '1/Å', display: true}
+                                    }]
+                                }
+                            }
+                        });
+                        </script>
+                    </td>
+                    <td width="20%" style = "margin-left: 10%">
+                        <form action="/alignwithresult/" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <fieldset>
+                                <div class="form-group" style = "margin-left: 10%" align="left">
+                                    <input type="file" id="PDBFile" aria-describedby="uppdbHelp" name = "up_pdb">
+                                    <small id="uppdbHelp" class="form-text text-muted">Upload a pdb structure to do alignment.</small>
+                                </div>
+                                <div class="form-group" style = "margin-left: 10%" align="left">
+                                    <input type="text" style="display: none" value="{{ filepath }}" name = "job_number">
+                                </div>
+                                <div align="left" style = "margin-left: 10%" class="form-group">
+                                    <button type="submit" class="btn btn-primary">Do alignment</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </td>
                 </tr>
             </table>
             <h4 class="display-4">You can download results here!</h4>
@@ -106,7 +184,7 @@
         <hr class="my-4">
 
         <p class="lead">
-          <a class="btn btn-primary btn-lg" href="/check/" role="button">Back</a>
+            <a class="btn btn-primary btn-lg" href="/check/" role="button">Back</a>
         </p>
     </div>
 

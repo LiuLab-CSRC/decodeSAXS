@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^samples_withoutRmax/',reconViews.samples_withoutRmax),
     url(r'^getform/',reconViews.getform),
     url(r'^checkresult/',reconViews.checkresult),
+    url(r'^alignwithresult/',reconViews.alignwithresult),
     url(r'^showsamples/',reconViews.showsamples),
     url(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 ]
