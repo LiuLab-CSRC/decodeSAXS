@@ -11,8 +11,8 @@ import socket
 import json
 import numpy as np
 import processSaxs as ps
-#from sastbx.zernike_model import model_interface
-#import zalign
+from sastbx.zernike_model import model_interface
+import zalign
 
 
 # Create your views here.
@@ -186,7 +186,7 @@ def generatedata(request,cur_time):
         jsendmessage = json.dumps(sendmessage)
 
 
-        HOST, PORT = "10.0.1.249", 50001
+        HOST, PORT = "10.0.0.20", 50001
         #print "Send: {}".format(jsendmessage)
         client(HOST, PORT, jsendmessage)
 
@@ -255,8 +255,8 @@ def alignwithresult(request):
         #pdbfile = '%s/out.ccp4'%pdbpath
         #cavitymodel = model_interface.build_model(pdbfile, 'pdb', 20, None)
         #shiftrmax=cavitymodel.rmax*0.9
-        #args = ['fix=%s/out.ccp4'%pdbpath, 'typef=ccp4', 'mov=%s/upload_pdb.pdb'%pdbpath, 'rmax=%f'%shiftrmax]
-        #zalign.run(args, pdbpath)
+        args = ['fix=%s/out.ccp4'%pdbpath, 'typef=ccp4', 'mov=%s/upload_pdb.pdb'%pdbpath, 'rmax=%f'%shiftrmax]
+        zalign.run(args, pdbpath)
         #os.system("sastbx.python %s"%args)
         status = 'yes'
         havepdb = 'yes'
