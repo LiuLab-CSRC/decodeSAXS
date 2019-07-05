@@ -11,8 +11,8 @@ import socket
 import json
 import numpy as np
 import processSaxs as ps
-from sastbx.zernike_model import model_interface
-import zalign
+#from sastbx.zernike_model import model_interface
+#import zalign
 
 
 # Create your views here.
@@ -255,9 +255,9 @@ def alignwithresult(request):
         #pdbfile = '%s/out.ccp4'%pdbpath
         #cavitymodel = model_interface.build_model(pdbfile, 'pdb', 20, None)
         #shiftrmax=cavitymodel.rmax*0.9
-        args = ['fix=%s/out.ccp4'%pdbpath, 'typef=ccp4', 'mov=%s/upload_pdb.pdb'%pdbpath, 'rmax=%f'%shiftrmax]
-        zalign.run(args, pdbpath)
-        #os.system("sastbx.python %s"%args)
+        #args = ['fix=%s/out.ccp4'%pdbpath, 'typef=ccp4', 'mov=%s/upload_pdb.pdb'%pdbpath, 'rmax=%f'%shiftrmax]
+        #zalign.run(args, pdbpath)
+        os.system("sastbx.python --job_id %s"%check_id)
         status = 'yes'
         havepdb = 'yes'
         downloadlink = check_id+'.tar.gz'
