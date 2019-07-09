@@ -206,12 +206,13 @@ def checkresult(request):
         check_id = request.POST.get("check_id")
         check_path = "./reconstruction_web/media/result/" + check_id
         downloadlink = ''
+        status = 'no'
+        havepdb = 'no'
+        upload_saxs_path = ''
         try:
             check_files = os.listdir(check_path)
             total_num = len(check_files)
             check_num = 0
-            status = 'no'
-            havepdb = 'no'
             for dir in check_files:
                 if '.tar.gz' in dir:
                     status = 'yes'
