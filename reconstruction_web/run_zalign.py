@@ -1,13 +1,7 @@
-import argparse
 import zalign
 from sastbx.zernike_model import model_interface
 
-
-parser=argparse.ArgumentParser()
-parser.add_argument('--job_id',help='job id',type=str)
-args=parser.parse_args()
-pdbpath=args.job_id
-
+pdbpath=sys.argv[1]
 
 pdbfile = '/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/%s/out.ccp4'%pdbpath
 cavitymodel = model_interface.build_model(pdbfile, 'pdb', 20, None)
