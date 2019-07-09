@@ -258,7 +258,7 @@ def alignwithresult(request):
         #shiftrmax=cavitymodel.rmax*0.9
         #args = ['fix=%s/out.ccp4'%pdbpath, 'typef=ccp4', 'mov=%s/upload_pdb.pdb'%pdbpath, 'rmax=%f'%shiftrmax]
         #zalign.run(args, pdbpath)
-        os.system("sastbx.python /root/sites/hhe-site/decodeSAXS/reconstruction_web/run_zalign.py --job_id %s"%check_id)
+        os.system("sastbx.python /root/sites/hhe-site/decodeSAXS/reconstruction_web/run_zalign.py %s"%check_id)
         status = 'yes'
         havepdb = 'yes'
         downloadlink = check_id+'.tar.gz'
