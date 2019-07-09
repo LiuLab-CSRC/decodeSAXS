@@ -1,3 +1,4 @@
+import sys
 import zalign
 from sastbx.zernike_model import model_interface
 
