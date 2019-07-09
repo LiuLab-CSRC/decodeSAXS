@@ -1,6 +1,6 @@
 import sys
 import zalign
-#from sastbx.zernike_model import model_interface
+from sastbx.zernike_model import model_interface
 
 pdbpath=sys.argv[1]
 
