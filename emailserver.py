@@ -39,8 +39,9 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         msg['Subject'] = Header(u'the results of decodeSAXS', 'utf-8').encode()
 
         # add MIMEText:
-        msg.attach(MIMEText("Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.\nYour job ID is : %s\n"%job_file, 'plain'))
-        msg.attach(MIMEText("""you can check your result here: <p><a href="liulab.csrc.ac.cn:10005/check/">liulab.csrc.ac.cn:10005/check/</a></p>""", 'html'))
+        contenthtml="""<html><head><body><p>Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.</p><br><p>Your job ID is :""" + job_file + """</p><br><p>you can check your result here: </p><br><p><a href="liulab.csrc.ac.cn:10005/check/">liulab.csrc.ac.cn:10005/check/</a></p></body></head></html>"""
+        #msg.attach(MIMEText("Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.\nYour job ID is : %s\nyou can check your result here: liulab.csrc.ac.cn:10005/check/"%job_file, 'plain'))
+        msg.attach(MIMEText(contenthtml, 'html'))
         # add file:
         with open('%s/%s/%s.tar.gz'%(web_outpath,job_file,job_file), 'rb') as f:
             att = MIMEBase('application', 'octet-stream')
