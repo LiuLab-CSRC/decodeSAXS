@@ -269,5 +269,18 @@ def alignwithresult(request):
         context["downloadlink"] = downloadlink
         context["filepath"] = downloadlink.split('.')[0]
 
+        check_path = "./reconstruction_web/media/result/" + check_id
+        upload_saxs_path=''
+        check_files = os.listdir(check_path)
+        for diri in check_files:
+            if 'upload_saxs' in diri:
+                upload_saxs_path=check_path+'/'+ diri
+                break
+        sourcesaxsdata = ps.generatesaxsstr(upload_saxs_path)
+        fit_saxs_path = check_path+'/finalfit.txt'
+        fitsaxsdata = ps.generatesaxsstr(fit_saxs_path)
+        context["sourcesaxsdata"] = sourcesaxsdata
+        context["fitsaxsdata"] =fitsaxsdata
+
         return render(request, "getresult.html", context)
 
