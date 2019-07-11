@@ -1,69 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>decodeSAXS-history</title>
     {% load staticfiles %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="stylesheet" href="{% static "./4/flatly/bootstrap.css" %}" media="screen">
     <link rel="stylesheet" href="{% static "./_assets/css/custom.min.css" %}">
     <link rel="stylesheet" href="{% static "./_vendor/bootstrap/dist/css/bootstrap-table.css" %}">
 
-  </head>
-  <body>
-    <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-      <div class="container">
-        <a style="font-size: x-large" href="/index/" class="navbar-brand">decodeSAXS</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a style="font-size: large" class="nav-link" href="/index/">Home</a>
-            </li>
-            <li class="nav-item">
-            <a style="font-size: large" class="nav-link" href="/submit/">Submit</a>
-            </li>
-            <li class="nav-item">
-              <a style="font-size: large" class="nav-link" href="/check/">Check</a>
-            </li>
-            <li class="nav-item">
-              <a style="font-size: large" class="nav-link" href="/history/">History</a>
-            </li>
-            <li class="nav-item">
-                <div class="btn-group">
-                    <button type="button" style="font-size: large;margin-top: 1px" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Samples
-                        <span class="caret"></span>
-                    </button>
-                    <ul width='10px' class="dropdown-menu" role="menu">
-                        <li><a style="font-size: large;background-color: #476478" class="nav-link" href="/samples_withRmax/">withRmax</a></li>
-                        <li><a style="font-size: large;background-color: #476478" class="nav-link" href="/samples_withoutRmax/">withoutRmax</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item">
-              <a style="font-size: large" class="nav-link" href="/tutorial/">Tutorial</a>
-            </li>
-            <li><a style="font-size: large" class="nav-link" href="https://github.com/DreAymi/SAXS_reconstruction"><i aria-hidden="true"></i> GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
+</head>
+<body>
+<script src="{% static "./header.js" %}"></script>
 
-
-
-    <div class="page-header" id="banner" style = "margin-left: 16%;margin-right: 16%">
-        <div class="row">
-          <div class="col-lg-8 col-md-7 col-sm-6">
+<div class="page-header" id="banner" style="margin-left: 16%;margin-right: 16%">
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-sm-6">
             <h1>Submit History</h1>
-          </div>
         </div>
-        <hr></hr>
-        <table id="listHistory">
-        </table>
     </div>
+    <hr></hr>
+    <table id="listHistory">
+    </table>
+</div>
 
 <script src="{% static "./_vendor/jquery/dist/jquery.min.js" %}"></script>
 <script src="{% static "./_vendor/bootstrap/dist/js/bootstrap.min.js" %}"></script>
@@ -71,46 +31,44 @@
 
 
 <script>
-    function gethistory()
-
-     {
+    function gethistory() {
         $('#listHistory').bootstrapTable('destroy');
         $('#listHistory').bootstrapTable({
-        url: '/checkhistory/',
-        method: 'get',
-        contentType:"application/x-www-form-urlencoded; charset=UTF-8", // 默认是：'application/json'， 不改的话，后台获取不到数据!
+            url: '/checkhistory/',
+            method: 'get',
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8", // 默认是：'application/json'， 不改的话，后台获取不到数据!
 
-        cache: false,   //是否启用 数据缓存
-        pagination: true,  //是都分页
-        sidePageination: 'client',   //谁来分页，客户端：'client'，服务端：'server'
-        pageNumber: 1,   //默认显示 首页
+            cache: false,   //是否启用 数据缓存
+            pagination: true,  //是都分页
+            sidePageination: 'client',   //谁来分页，客户端：'client'，服务端：'server'
+            pageNumber: 1,   //默认显示 首页
             pageSize: 10,     //每页需要显示的数据量
-        pageList: [10, 25, 50],  //可供选择的，每页需要显示的数据量
-        height: 600,       //表格高度
-        uniqueId: 'job_name',
-        silent: true,    // 刷新服务器数据
-        showExport: true,
-        exportDataType: 'all',
+            pageList: [10, 25, 50],  //可供选择的，每页需要显示的数据量
+            height: 600,       //表格高度
+            uniqueId: 'job_name',
+            silent: true,    // 刷新服务器数据
+            showExport: true,
+            exportDataType: 'all',
 
-        columns: [{
-            field: 'job_name',
-            title: 'Job name',
-            valign: 'middle',
-            align: 'center',
-            halign: 'center'
-        }, {
-            field: 'status',
-            title: 'status',
-            valign: 'middle',
-            align: 'center',
-            halign: 'center'
-        }, {
-            field: 'date_time',
-            title: 'submit date',
-            valign: 'middle',
-            align: 'center',
-            halign: 'center'
-        }],
+            columns: [{
+                field: 'job_name',
+                title: 'Job name',
+                valign: 'middle',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'status',
+                title: 'status',
+                valign: 'middle',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'date_time',
+                title: 'submit date',
+                valign: 'middle',
+                align: 'center',
+                halign: 'center'
+            }],
             /*
             {
             field: 'downloadlink',
@@ -141,27 +99,27 @@
         }],
         */
 
-        responseHandler: function(res) {   //处理 从后端 返回的数据
-            console.log(res);
-            if (res == 0) {
-                alert('查询出问题！');
-            } else {
-                var orderListData = res['rows'];
-                return orderListData;
+            responseHandler: function (res) {   //处理 从后端 返回的数据
+                console.log(res);
+                if (res == 0) {
+                    alert('查询出问题！');
+                } else {
+                    var orderListData = res['rows'];
+                    return orderListData;
+                }
+            },
+            onLoadError: function (status) {
+                console.log(status);
+                $('#order_list').bootstrapTable('removeAll');
             }
-        },
-        onLoadError: function (status) {
-            console.log(status);
-            $('#order_list').bootstrapTable('removeAll');
-        }
         })
     }
+
     gethistory()
 
 </script>
 
-<div class="text" style=" text-align:center;margin-top: 120px">Building 9, East Zone, ZPark II, No.10 East Xibeiwang Road, Haidian District, Beijing 100193, China</div>
-<div class="text" style=" text-align:center;">Department of Complex System</div>
+<script src="{% static "./footer.js" %}"></script>
 
 </body>
 
