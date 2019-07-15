@@ -43,10 +43,17 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         #msg.attach(MIMEText("Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.\nYour job ID is : %s\nyou can check your result here: liulab.csrc.ac.cn:10005/check/"%job_file, 'plain'))
         msg.attach(MIMEText(contenthtml, 'html'))
         # add file:
-        with open('%s/%s/%s.tar.gz'%(web_outpath,job_file,job_file), 'rb') as f:
+        filepath=web_outpath+'/'+job_file
+        files=os.listdir(filepath)
+        job_name=''
+        for filei in files:
+            if '.tar.gz' in filei:
+                job_name=filei
+                break
+        with open('%s/%s/%s'%(web_outpath,job_file,job_name), 'rb') as f:
             att = MIMEBase('application', 'octet-stream')
             att.set_payload(f.read())
-            att.add_header('Content-Disposition', 'attachment', filename = ('utf-8','','%s.tar.gz'%job_file))
+            att.add_header('Content-Disposition', 'attachment', filename = ('utf-8','','%s'%job_name))
             encoders.encode_base64(att)
             msg.attach(att)
 

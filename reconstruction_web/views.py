@@ -127,8 +127,9 @@ def readFile(filename, chunk_size=512):
 
 def download_file(request):
     download_name = request.GET["file"]
-    the_file_name = str(download_name).split(".")
-    filename = os.path.join('./reconstruction_web/media/result/'+the_file_name[0]+'/'+str(download_name))
+    download_path = request.GET["filepath"]
+    #the_file_name = str(download_name).split(".")
+    filename = os.path.join('./reconstruction_web/media/result/'+str(download_path)+'/'+str(download_name))
     response = StreamingHttpResponse(readFile(filename))
     response['Content-Type'] = 'application/octet-stream'
     response['Content-Disposition'] = 'attachment;filename="{0}"'.format(str(download_name))
@@ -167,7 +168,7 @@ def generatedata(request,cur_time):
         estimate_rmax=request.POST.get('estimate_rmax')
         send_email=request.POST.get('send_email')
         job_log=open('joblog.txt','a')
-        print >> job_log, cur_time+','+job_name
+        print >> job_log, cur_time+','+job_name+','+send_email
         job_log.close()
         os.mkdir("./reconstruction_web/media/result/" + cur_time)
         file_path = "./reconstruction_web/media/result/" + cur_time + '/' + 'upload_saxs.'+file_obj.name.split('.')[-1]
@@ -182,7 +183,7 @@ def generatedata(request,cur_time):
         #saxs_data = np.loadtxt(file_path)
         saxs_data = list(saxs_data.astype(float).reshape(-1))
         saxs_data = str(saxs_data)
-        sendmessage = [{'saxs_data': saxs_data, 'job_file': cur_time, 'estimate_rmax': estimate_rmax, 'send_email': send_email}]
+        sendmessage = [{'saxs_data': saxs_data, 'job_file': cur_time, 'estimate_rmax': estimate_rmax, 'send_email': send_email, 'job_name': job_name}]
         jsendmessage = json.dumps(sendmessage)
 
 
@@ -204,6 +205,7 @@ def getform(request):
 def checkresult(request):
     if request.method == "POST":
         check_id = request.POST.get("check_id")
+        check_id = check_id.strip()
         check_path = "./reconstruction_web/media/result/" + check_id
         downloadlink = ''
         status = 'no'
@@ -231,7 +233,7 @@ def checkresult(request):
         context["status"] = status
         context["havepdb"] = havepdb
         context["downloadlink"] = downloadlink
-        context["filepath"] = downloadlink.split('.')[0]
+        context["filepath"] = check_id
         sourcesaxsdata = ps.generatesaxsstr(upload_saxs_path)
         fit_saxs_path = check_path+'/finalfit.txt'
         fitsaxsdata = ps.generatesaxsstr(fit_saxs_path)
