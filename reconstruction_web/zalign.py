@@ -124,7 +124,7 @@ def run(args,outpath=None):
   current_is_mov = False
   for model in (fix_model, mov_model):
     #base = model.id
-    base=outpath+'/'+mov.split("/")[-1].split(".")[0]
+    base=outpath+'/'+mov.split("/")[-1][:-4]
     '''
     easy_pickle.dump(base+"_za.nlm", model.nlm_array.coefs() )
     print "  "+base+"_za.nlm"
