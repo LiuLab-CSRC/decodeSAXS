@@ -104,19 +104,20 @@
                             data: {
                                 datasets: [
                                     {
-                                        fill: false,
-                                        borderColor: window.chartColors.red,
-                                        label: 'Experimental I(q)',
-                                        data: [
-                                            {{ sourcesaxsdata }}
-                                        ],
-                                    },
-                                    {
+
                                         fill: false,
                                         borderColor: window.chartColors.blue,
                                         label: 'Fitting I(q)',
                                         data: [
                                             {{ fitsaxsdata }}
+                                        ],
+                                    },
+                                    {
+                                        fill: false,
+                                        borderColor: window.chartColors.red,
+                                        label: 'Experimental I(q)',
+                                        data: [
+                                            {{ sourcesaxsdata }}
                                         ],
                                     }],
                             },

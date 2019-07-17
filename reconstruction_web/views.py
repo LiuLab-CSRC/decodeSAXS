@@ -263,13 +263,11 @@ def alignwithresult(request):
         os.system("sastbx.python /root/sites/hhe-site/decodeSAXS/reconstruction_web/run_zalign.py %s"%check_id)
         status = 'yes'
         havepdb = 'yes'
-        downloadlink = check_id+'.tar.gz'
 
         context = {}
         context["status"] = status
         context["havepdb"] = havepdb
-        context["downloadlink"] = downloadlink
-        context["filepath"] = downloadlink.split('.')[0]
+        context["filepath"] = check_id
 
         check_path = "./reconstruction_web/media/result/" + check_id
         upload_saxs_path=''
@@ -277,10 +275,12 @@ def alignwithresult(request):
         for diri in check_files:
             if 'upload_saxs' in diri:
                 upload_saxs_path=check_path+'/'+ diri
-                break
+            if '.tar.gz' in diri:
+                downloadlink = diri
         sourcesaxsdata = ps.generatesaxsstr(upload_saxs_path)
         fit_saxs_path = check_path+'/finalfit.txt'
         fitsaxsdata = ps.generatesaxsstr(fit_saxs_path)
+        context["downloadlink"] = downloadlink
         context["sourcesaxsdata"] = sourcesaxsdata
         context["fitsaxsdata"] =fitsaxsdata
 
