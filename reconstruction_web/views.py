@@ -4,9 +4,19 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import StreamingHttpResponse
+
+from email import encoders
+from email.header import Header
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.utils import parseaddr, formataddr
+import smtplib 
+
 import os
 import thread
 import time
+import Queue
 import socket
 import json
 import numpy as np
@@ -16,6 +26,15 @@ import processSaxs as ps
 
 
 # Create your views here.
+q = Queue.Queue(0)
+tag=True
+
+def is_number(s):
+    try:
+        float(s)  # for int, long and float
+    except ValueError:
+        return False
+    return True
 
 def index(request):
     pass
@@ -159,7 +178,7 @@ def client(ip, port, message):
     finally:
         sock.close()
 
-
+'''
 def generatedata(request,cur_time):
     if request.method == "POST":
         cur_time = str(cur_time)
@@ -190,6 +209,136 @@ def generatedata(request,cur_time):
         HOST, PORT = "10.0.0.20", 50001
         #print "Send: {}".format(jsendmessage)
         client(HOST, PORT, jsendmessage)
+'''
+def generatedata(request,cur_time):
+    if request.method == "POST":
+        cur_time = str(cur_time)
+        file_obj = request.FILES["up_file"]
+        job_name = request.POST.get('job_name')
+        estimate_rmax=request.POST.get('estimate_rmax')
+        send_email=request.POST.get('send_email')
+        job_log=open('joblog.txt','a')
+        print >> job_log, cur_time+','+job_name+','+send_email
+        job_log.close()
+        os.mkdir("./reconstruction_web/media/result/" + cur_time)
+        file_path = "./reconstruction_web/media/result/" + cur_time + '/' + 'upload_saxs.'+file_obj.name.split('.')[-1]
+        with open(file_path, "wb") as f1:
+            for i in file_obj.chunks():
+                f1.write(i)
+        f1.close()
+        process_result = ps.process(file_path)
+        if len(process_result)==2:
+            estimate_rmax=str(process_result[1])
+        saxs_data = process_result[0]
+
+        iq_path="/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/" + cur_time + '/' + 'processed.iq'
+        np.savetxt(iq_path,saxs_data,fmt='%.3f')
+
+        main_path='/root/sites/hhe-site/SAXS_reconstruction'
+        outputpath='/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/'+cur_time
+
+        if is_number(estimate_rmax):
+            Rmax = float(estimate_rmax)
+            rec_cmd = ['sastbx.python %s/main.py > %s/logprint.txt --iq_path %s --output_folder %s --rmax %f' % (
+            main_path, outputpath, iq_path, outputpath, Rmax), send_email, job_name, cur_time]
+        else:
+            rec_cmd = ['sastbx.python %s/main.py > %s/logprint.txt --iq_path %s --output_folder %s' % (
+            main_path, outputpath, iq_path, outputpath), send_email, job_name, cur_time]
+        
+        q.put(rec_cmd)
+        if tag:
+            runproj()
+
+
+def runproj():
+    tag=False
+    resultpath='/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/'
+    job_info = q.get(block=False)
+    job_cmd = job_info[0]
+    email_addr = job_info[1]
+    job_nameinfo = job_info[2]
+    job_fileinfo = job_info[3]
+    try:
+        run_stat = os.system(job_cmd)
+    except:
+        pass
+
+    if run_stat == 0:
+        try:
+            os.system("cd %s/%s && rm log.txt && rm logprint.txt && rm out.pdb && mv final_saxs.txt finalfit.txt" % (
+                resultpath, job_fileinfo))
+            os.system("cd %s && tar -cvf %s.tar.gz %s && mv %s.tar.gz %s" % (resultpath, job_nameinfo, job_fileinfo,job_nameinfo,job_fileinfo))
+
+            from_addr = 'hehao1777@163.com'
+            password = 'hehao1777'
+            to_addr = email_addr
+            smtp_server = 'smtp.163.com'
+            msg = MIMEMultipart()
+            msg['From'] = _format_addr(u'decodeSAXS <%s>' % from_addr)
+            msg['To'] = _format_addr(u'Users <%s>' % to_addr)
+            msg['Subject'] = Header(u'the results of decodeSAXS', 'utf-8').encode()
+
+            # add MIMEText:
+            contenthtml="""<html><head><body><p>Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.</p><p>Your job ID is :""" + job_fileinfo + """</p><p>you can check your result here: </p><p><a href="http://liulab.csrc.ac.cn:10005/check/" mce_href="http://liulab.csrc.ac.cn:10005/check/">liulab.csrc.ac.cn:10005/check/</a></p></body></head></html>"""
+            #msg.attach(MIMEText("Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.\nYour job ID is : %s\nyou can check your result here: liulab.csrc.ac.cn:10005/check/"%job_file, 'plain'))
+            msg.attach(MIMEText(contenthtml, 'html'))
+            # add file:
+            filepath=resultpath+'/'+job_fileinfo
+            files=os.listdir(filepath)
+            job_name=job_nameinfo+'.tar.gz'
+
+            '''
+            for filei in files:
+                if '.tar.gz' in filei:
+                    job_name=filei
+                    break
+            '''
+            with open('%s/%s/%s'%(resultpath,job_fileinfo,job_name), 'rb') as f:
+                att = MIMEBase('application', 'octet-stream')
+                att.set_payload(f.read())
+                att.add_header('Content-Disposition', 'attachment', filename = ('utf-8','','%s'%job_name))
+                encoders.encode_base64(att)
+                msg.attach(att)
+
+                #mime = MIMEBase('image', 'jpg', filename='0.jpg')
+                #mime.add_header('Content-Disposition', 'attachment', filename='0.jpg')
+                #mime.add_header('Content-ID', '<0>')
+                #mime.add_header('X-Attachment-Id', '0')
+                #mime.set_payload(f.read())
+                #encoders.encode_base64(attachfile)
+                #msg.attach(attachfile)
+                
+
+            server = smtplib.SMTP(smtp_server, 25)
+            server.set_debuglevel(1)
+            server.login(from_addr, password)
+            try:
+                server.sendmail(from_addr, [to_addr], msg.as_string())
+            except smtplib.SMTPConnectError as e:
+                print '邮件发送失败，连接失败:', e.smtp_code, e.smtp_error
+            except smtplib.SMTPAuthenticationError as e:
+                print '邮件发送失败，认证错误:', e.smtp_code, e.smtp_error
+            except smtplib.SMTPSenderRefused as e:
+                print '邮件发送失败，发件人被拒绝:', e.smtp_code, e.smtp_error
+            except smtplib.SMTPRecipientsRefused as e:
+                print '邮件发送失败，收件人被拒绝:', e.smtp_code, e.smtp_error
+            except smtplib.SMTPDataError as e:
+                print '邮件发送失败，数据接收拒绝:', e.smtp_code, e.smtp_error
+            except smtplib.SMTPException as e:
+                print '邮件发送失败, ', e.message
+            except Exception as e:
+                print '邮件发送异常, ', str(e)
+            finally:
+                server.quit()
+        except:
+            pass
+    tag=True
+    if not q.empty():
+        runproj()
+
+
+
+
 
 
 def getform(request):
