@@ -258,6 +258,7 @@ def generatedata(request,cur_time):
 
 
 def runproj():
+    global tag
     tag=False
     resultpath='/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/'
     job_info = q.get(block=False)
