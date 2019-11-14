@@ -231,9 +231,15 @@ def generatedata(request,cur_time):
             estimate_rmax=str(process_result[1])
         saxs_data = process_result[0]
         print saxs_data
+        print tag
+        if q.empty():
+            print "queue empty"
 
         iq_path="./reconstruction_web/media/result/" + cur_time + '/' + 'processed.iq'
-        np.savetxt(iq_path,saxs_data,fmt='%.3f')
+        with open(iq_path,"w") as f2:
+            for ii in range(saxs_data.shape[0]):
+                 print >> f2, saxs_data[ii,0],saxs_data[ii,1]
+        #np.savetxt(iq_path,saxs_data,fmt='%.3f')
 
         main_path='/root/sites/hhe-site/SAXS_reconstruction'
         outputpath='/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/'+cur_time
