@@ -260,7 +260,7 @@ def generatedata(request,cur_time):
 def runproj():
     global tag
     tag=False
-    resultpath='/root/sites/hhe-site/decodeSAXS/reconstruction_web/media/result/'
+    resultpath='./reconstruction_web/media/result/'
     job_info = q.get(block=False)
     job_cmd = job_info[0]
     email_addr = job_info[1]
@@ -291,8 +291,8 @@ def runproj():
             #msg.attach(MIMEText("Thanks for using decodeSAXS, hope it helpful for you, any suggestions you can contact with us.\nYour job ID is : %s\nyou can check your result here: liulab.csrc.ac.cn:10005/check/"%job_file, 'plain'))
             msg.attach(MIMEText(contenthtml, 'html'))
             # add file:
-            filepath=resultpath+'/'+job_fileinfo
-            files=os.listdir(filepath)
+            filepath=resultpath+job_fileinfo
+            #files=os.listdir(filepath)
             job_name=job_nameinfo+'.tar.gz'
 
             '''
@@ -301,7 +301,7 @@ def runproj():
                     job_name=filei
                     break
             '''
-            with open('%s/%s/%s'%(resultpath,job_fileinfo,job_name), 'rb') as f:
+            with open('%s/%s'%(filepath,job_name), 'rb') as f:
                 att = MIMEBase('application', 'octet-stream')
                 att.set_payload(f.read())
                 att.add_header('Content-Disposition', 'attachment', filename = ('utf-8','','%s'%job_name))
